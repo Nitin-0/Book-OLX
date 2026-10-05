@@ -1,675 +1,458 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BookNest - Online Book Store</title>
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>BookOLX — Old Books, New Stories | Buy & Sell Pre-loved Books</title>
+<meta name="description" content="India's most loved second-hand book marketplace. Buy pre-loved books up to 70% off. Sell your shelf in 60 seconds.">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: { ink:'#002F34', inkLight:'#0E4B51', sun:'#FFCE32', sunDark:'#E6B800', tealx:'#23E5DB', paper:'#FAF6EF', cream:'#FFF8E7' },
+      fontFamily: { display:['Fraunces','serif'], body:['"Plus Jakarta Sans"','sans-serif'] },
+      boxShadow: { card:'0 8px 30px -8px rgba(0,47,52,0.18)', pop:'4px 4px 0px #002F34', popSm:'3px 3px 0px #002F34' }
     }
-
-    body {
-      background: #f7f7f7;
-      color: #222;
-    }
-
-    /* Header */
-    header {
-      background: #ffffff;
-      padding: 18px 7%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .logo {
-      font-size: 25px;
-      font-weight: bold;
-      color: #2e7d32;
-    }
-
-    nav {
-      display: flex;
-      gap: 25px;
-    }
-
-    nav a {
-      text-decoration: none;
-      color: #333;
-      font-weight: 500;
-    }
-
-    nav a:hover {
-      color: #2e7d32;
-    }
-
-    .cart-button {
-      border: none;
-      background: #2e7d32;
-      color: white;
-      padding: 10px 17px;
-      border-radius: 7px;
-      cursor: pointer;
-      font-size: 15px;
-    }
-
-    /* Hero */
-    .hero {
-      min-height: 380px;
-      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 50px 10%;
-      gap: 30px;
-    }
-
-    .hero-content {
-      max-width: 600px;
-    }
-
-    .hero h1 {
-      font-size: 48px;
-      margin-bottom: 15px;
-      color: #1b5e20;
-    }
-
-    .hero p {
-      font-size: 18px;
-      color: #555;
-      margin-bottom: 25px;
-      line-height: 1.6;
-    }
-
-    .shop-btn {
-      background: #2e7d32;
-      color: white;
-      border: none;
-      padding: 13px 25px;
-      border-radius: 7px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    .shop-btn:hover {
-      background: #1b5e20;
-    }
-
-    .hero-book {
-      font-size: 150px;
-    }
-
-    /* Search */
-    .search-section {
-      padding: 35px 7% 10px;
-      display: flex;
-      justify-content: center;
-    }
-
-    #searchInput {
-      width: 500px;
-      max-width: 100%;
-      padding: 14px 18px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 16px;
-      outline: none;
-    }
-
-    #searchInput:focus {
-      border-color: #2e7d32;
-    }
-
-    /* Categories */
-    .categories {
-      padding: 25px 7%;
-      text-align: center;
-    }
-
-    .categories button {
-      border: 1px solid #2e7d32;
-      background: white;
-      color: #2e7d32;
-      padding: 9px 17px;
-      margin: 5px;
-      border-radius: 20px;
-      cursor: pointer;
-    }
-
-    .categories button:hover,
-    .categories button.active {
-      background: #2e7d32;
-      color: white;
-    }
-
-    /* Products */
-    .products-section {
-      padding: 20px 7% 60px;
-    }
-
-    .section-title {
-      text-align: center;
-      margin-bottom: 30px;
-      font-size: 30px;
-    }
-
-    .products {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 25px;
-    }
-
-    .book-card {
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-      transition: 0.3s;
-    }
-
-    .book-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    }
-
-    .book-image {
-      height: 230px;
-      background: #e8f5e9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 90px;
-    }
-
-    .book-info {
-      padding: 18px;
-    }
-
-    .book-info h3 {
-      margin-bottom: 8px;
-    }
-
-    .author {
-      color: #777;
-      font-size: 14px;
-      margin-bottom: 10px;
-    }
-
-    .price {
-      color: #2e7d32;
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-
-    .add-cart {
-      width: 100%;
-      border: none;
-      background: #2e7d32;
-      color: white;
-      padding: 11px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .add-cart:hover {
-      background: #1b5e20;
-    }
-
-    /* Cart */
-    .cart-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 200;
-    }
-
-    .cart {
-      position: absolute;
-      right: 0;
-      top: 0;
-      height: 100%;
-      width: 380px;
-      max-width: 90%;
-      background: white;
-      padding: 25px;
-      overflow-y: auto;
-    }
-
-    .cart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 25px;
-    }
-
-    .close-cart {
-      border: none;
-      background: none;
-      font-size: 25px;
-      cursor: pointer;
-    }
-
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 15px 0;
-      border-bottom: 1px solid #eee;
-    }
-
-    .cart-item h4 {
-      margin-bottom: 5px;
-    }
-
-    .remove-btn {
-      border: none;
-      color: #d32f2f;
-      background: none;
-      cursor: pointer;
-    }
-
-    .cart-total {
-      margin-top: 25px;
-      font-size: 21px;
-      font-weight: bold;
-    }
-
-    .checkout {
-      width: 100%;
-      margin-top: 15px;
-      padding: 13px;
-      border: none;
-      border-radius: 6px;
-      background: #2e7d32;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    /* Footer */
-    footer {
-      background: #1b1b1b;
-      color: white;
-      text-align: center;
-      padding: 30px;
-    }
-
-    @media (max-width: 700px) {
-      nav {
-        display: none;
-      }
-
-      .hero {
-        text-align: center;
-        justify-content: center;
-      }
-
-      .hero h1 {
-        font-size: 36px;
-      }
-
-      .hero-book {
-        display: none;
-      }
-    }
-  </style>
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+*{ -webkit-tap-highlight-color:transparent; }
+html{ scroll-behavior:smooth; }
+body{ font-family:'Plus Jakarta Sans',sans-serif; background:#FAF6EF; color:#002F34; }
+.font-display{ font-family:'Fraunces',serif; }
+::selection{ background:#FFCE32; color:#002F34; }
+::-webkit-scrollbar{ width:10px; height:8px; }
+::-webkit-scrollbar-track{ background:#FAF6EF; }
+::-webkit-scrollbar-thumb{ background:#002F34; border-radius:99px; border:2px solid #FAF6EF; }
+.no-scrollbar::-webkit-scrollbar{ display:none; } .no-scrollbar{ scrollbar-width:none; }
+.hero-pattern{ background-image:radial-gradient(#002F34 1.2px, transparent 1.2px); background-size:22px 22px; opacity:.08; }
+.dot-grid{ background-image:radial-gradient(rgba(255,255,255,.25) 1.5px, transparent 1.5px); background-size:18px 18px; }
+@keyframes floaty{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-14px) } }
+@keyframes floaty2{ 0%,100%{ transform:translateY(0) rotate(-2deg)} 50%{ transform:translateY(-10px) rotate(2deg)} }
+.animate-floaty{ animation:floaty 5s ease-in-out infinite; } .animate-floaty2{ animation:floaty2 6s ease-in-out infinite; }
+@keyframes marquee{ 0%{ transform:translateX(0)} 100%{ transform:translateX(-50%)} }
+.marquee-track{ display:flex; width:max-content; animation:marquee 22s linear infinite; }
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(18px)} to{ opacity:1; transform:translateY(0)} }
+.fade-up{ animation:fadeUp .5s ease both; }
+.book-card{ animation:fadeUp .5s ease both; }
+.book-card:nth-child(2){ animation-delay:.05s } .book-card:nth-child(3){ animation-delay:.1s } .book-card:nth-child(4){ animation-delay:.15s }
+@keyframes popIn{ 0%{ transform:scale(.9); opacity:0} 100%{ transform:scale(1); opacity:1} }
+.pop-in{ animation:popIn .25s ease both; }
+@keyframes toastIn{ from{ transform:translateX(100%); opacity:0} to{ transform:translateX(0); opacity:1} }
+.toast{ animation:toastIn .35s cubic-bezier(.21,1.02,.73,1) both; }
+.toast.out{ transition:.3s; transform:translateX(100%); opacity:0; }
+@keyframes checkPop{ 0%{ transform:scale(0)} 60%{ transform:scale(1.15)} 100%{ transform:scale(1)} }
+.check-pop{ animation:checkPop .6s cubic-bezier(.34,1.56,.64,1) both; }
+@keyframes typing{ 0%,60%,100%{ transform:translateY(0); opacity:.4} 30%{ transform:translateY(-4px); opacity:1} }
+.typing-dot{ animation:typing 1.2s infinite; } .typing-dot:nth-child(2){ animation-delay:.15s } .typing-dot:nth-child(3){ animation-delay:.3s }
+@keyframes shimmer{ 0%{ background-position:-400px 0} 100%{ background-position:400px 0} }
+.skeleton{ background:linear-gradient(90deg,#eee 25%,#f7f7f7 50%,#eee 75%); background-size:800px 100%; animation:shimmer 1.4s infinite; }
+input[type=range]{ -webkit-appearance:none; width:100%; height:6px; border-radius:99px; background:linear-gradient(to right,#002F34 var(--fill,40%),#E8DDC8 var(--fill,40%)); outline:none; }
+input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:#FFCE32; border:3px solid #002F34; cursor:pointer; box-shadow:2px 2px 0 #002F34; }
+input[type=range]::-moz-range-thumb{ width:20px; height:20px; border-radius:50%; background:#FFCE32; border:3px solid #002F34; cursor:pointer; }
+.sell-olx{ position:relative; background:#fff; border-radius:12px; padding:3px; }
+.sell-olx-inner{ background:#FFCE32; border-radius:9px; }
+.view{ min-height:60vh; }
+.drawer{ transition:transform .35s cubic-bezier(.32,.72,0,1); }
+.modal-bg{ background:rgba(0,47,52,.6); backdrop-filter:blur(6px); }
+.line-clamp-1{ display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; }
+.line-clamp-2{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+#loader{ transition:opacity .5s, visibility .5s; } #loader.hide{ opacity:0; visibility:hidden; }
+@keyframes spinSlow{ to{ transform:rotate(360deg)} }
+.loader-ring{ animation:spinSlow 1.2s linear infinite; }
+.book-3d{ transform-style:preserve-3d; transform:perspective(1000px) rotateY(-12deg) rotateX(4deg); transition:.5s; }
+.book-3d:hover{ transform:perspective(1000px) rotateY(-4deg) rotateX(0deg) translateY(-6px); }
+.tab-active{ background:#002F34 !important; color:#fff !important; }
+.chip{ animation:fadeUp .3s ease both; }
+select{ appearance:none; -webkit-appearance:none; }
+.checkbox-custom{ width:20px; height:20px; border-radius:6px; border:2px solid rgba(0,47,52,.25); display:flex; align-items:center; justify-content:center; transition:.2s; flex-shrink:0; }
+input:checked + .checkbox-custom{ background:#002F34; border-color:#002F34; color:#FFCE32; }
+.step-line::after{ content:''; position:absolute; top:20px; left:50%; width:100%; height:2px; background:#E5DDC8; z-index:0; }
+.step-line:last-child::after{ display:none; }
+</style>
 </head>
+<body class="antialiased pb-20 md:pb-0">
 
-<body>
+<!-- LOADER -->
+<div id="loader" class="fixed inset-0 z-[200] bg-paper flex flex-col items-center justify-center gap-5">
+  <div class="relative">
+    <div class="w-20 h-20 bg-ink rounded-3xl flex items-center justify-center shadow-pop rotate-3"><i class="fa-solid fa-book-open text-sun text-3xl"></i></div>
+    <div class="absolute -inset-3 border-4 border-dashed border-ink/20 rounded-[28px] loader-ring"></div>
+  </div>
+  <div class="text-center"><div class="font-display font-black text-2xl">Book<span class="opacity-50">OLX</span></div><div class="text-xs font-bold tracking-[.25em] uppercase text-ink/50 mt-1">Loading Bazaar…</div></div>
+  <div class="w-48 h-2 bg-ink/10 rounded-full overflow-hidden"><div id="loader-bar" class="h-full bg-ink rounded-full transition-all" style="width:10%"></div></div>
+</div>
 
-  <!-- Header -->
-  <header>
-    <div class="logo">📚 BookNest</div>
+<div id="toast-root" class="fixed top-4 right-4 z-[150] space-y-2 w-[calc(100vw-2rem)] max-w-sm"></div>
+<canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-[140]"></canvas>
 
-    <nav>
-      <a href="#">Home</a>
-      <a href="#books">Books</a>
-      <a href="#categories">Categories</a>
-      <a href="#contact">Contact</a>
-    </nav>
+<!-- TOP PROMO -->
+<div class="bg-ink text-white text-xs sm:text-sm relative z-40" style="padding-top:env(safe-area-inset-top, 0px)">
+  <div class="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-3">
+    <p class="flex items-center gap-2 truncate"><span class="bg-sun text-ink px-2 py-0.5 rounded-full font-extrabold text-[10px] shrink-0">NEW</span><span class="truncate">Flat 10% off first order • Use code <button onclick="copyPromo('BOOK10')" class="underline font-bold text-sun hover:text-white">BOOK10</button></span></p>
+    <div class="hidden sm:flex items-center gap-4 text-white/60 text-xs font-semibold shrink-0"><button onclick="navigate('browse')" class="hover:text-white">Help</button><span class="w-px h-3 bg-white/20"></span><span>EN | ₹ INR</span><span class="w-px h-3 bg-white/20"></span><span class="flex items-center gap-1"><span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span> 1,248 online</span></div>
+  </div>
+</div>
 
-    <button class="cart-button" onclick="openCart()">
-      🛒 Cart (<span id="cartCount">0</span>)
-    </button>
-  </header>
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Find Your Next Great Book</h1>
-      <p>
-        Discover thousands of books across fiction, technology,
-        business, education and more.
-      </p>
-      <button class="shop-btn" onclick="scrollToBooks()">
-        Shop Books
+<!-- HEADER -->
+<header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-ink/10 shadow-[0_2px_20px_-10px_rgba(0,47,52,.2)]">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center gap-2 sm:gap-3 py-3">
+      <button onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 rounded-xl hover:bg-paper flex items-center justify-center"><i class="fa-solid fa-bars text-lg"></i></button>
+      <button onclick="navigate('home')" class="flex items-center gap-2 shrink-0 text-left">
+        <div class="w-10 h-10 bg-ink rounded-xl flex items-center justify-center relative overflow-hidden shadow-popSm"><i class="fa-solid fa-book-open text-sun text-lg"></i><div class="absolute -bottom-2 -right-2 w-6 h-6 bg-sun/20 rounded-full"></div></div>
+        <div class="leading-none hidden xs:block sm:block"><div class="font-display font-black text-xl tracking-tight">Book<span class="text-ink/40">OLX</span></div><div class="text-[9px] font-extrabold tracking-[.18em] text-ink/50 uppercase hidden sm:block">Old Books • New Stories</div></div>
       </button>
+      <div class="hidden lg:flex items-center gap-2 bg-paper border border-ink/10 rounded-xl px-3 py-2.5 min-w-[172px] hover:border-ink/30 transition">
+        <i class="fa-solid fa-location-dot text-ink/40 text-sm"></i>
+        <select id="nav-location" onchange="setLocation(this.value)" class="bg-transparent text-sm font-bold outline-none w-full cursor-pointer pr-4" style="background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23002F34' stroke-width='2' fill='none'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right center;"><option>All Locations</option><option>Mumbai</option><option>Delhi</option><option>Bangalore</option><option>Pune</option><option>Hyderabad</option><option>Chennai</option><option>Kolkata</option><option>Ahmedabad</option><option>Jaipur</option></select>
+      </div>
+      <div class="hidden md:flex flex-1 relative max-w-2xl">
+        <div class="flex w-full bg-white border-2 border-ink rounded-xl overflow-hidden focus-within:shadow-pop transition-shadow">
+          <input id="nav-search" oninput="handleSearchInput(event)" onfocus="showSuggestions(this.value)" placeholder="Search books, authors, ISBN…" class="flex-1 px-4 py-2.5 outline-none text-sm bg-transparent min-w-0">
+          <button onclick="handleSearchSubmit(event)" class="bg-ink text-white px-5 flex items-center gap-2 text-sm font-bold hover:bg-inkLight transition shrink-0"><i class="fa-solid fa-magnifying-glass"></i><span class="hidden xl:inline">Search</span></button>
+        </div>
+        <div id="search-suggestions" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-ink/10 overflow-hidden z-50"></div>
+      </div>
+      <nav class="hidden xl:flex items-center gap-1 text-sm font-bold ml-1">
+        <button onclick="navigate('browse')" data-nav="browse" class="px-3 py-2 rounded-lg hover:bg-paper transition">Browse</button>
+        <button onclick="navigate('wishlist')" data-nav="wishlist" class="px-3 py-2 rounded-lg hover:bg-paper transition">Wishlist</button>
+      </nav>
+      <div class="flex items-center gap-1.5 sm:gap-2 ml-auto">
+        <button onclick="navigate('wishlist')" class="relative w-10 h-10 rounded-xl hover:bg-paper flex items-center justify-center transition" title="Wishlist"><i class="fa-regular fa-heart text-lg"></i><span id="badge-wishlist" class="hidden absolute -top-0.5 -right-0.5 min-w-[20px] h-5 px-1 bg-red-500 text-white text-[11px] font-extrabold rounded-full flex items-center justify-center">0</span></button>
+        <button onclick="openCartDrawer()" class="relative w-10 h-10 rounded-xl hover:bg-paper flex items-center justify-center transition" title="Cart"><i class="fa-solid fa-cart-shopping text-lg"></i><span id="badge-cart" class="hidden absolute -top-0.5 -right-0.5 min-w-[20px] h-5 px-1 bg-ink text-sun text-[11px] font-extrabold rounded-full flex items-center justify-center">0</span></button>
+        <button onclick="openSell()" class="hidden sm:flex items-center gap-1.5 bg-sun text-ink font-extrabold px-4 lg:px-5 py-2.5 rounded-xl border-2 border-ink shadow-popSm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all text-sm"><i class="fa-solid fa-plus"></i> SELL</button>
+        <div id="auth-area" class="relative"></div>
+      </div>
     </div>
-
-    <div class="hero-book">📖</div>
-  </section>
-
-  <!-- Search -->
-  <section class="search-section">
-    <input
-      type="text"
-      id="searchInput"
-      placeholder="Search books or authors..."
-      onkeyup="searchBooks()"
-    />
-  </section>
-
-  <!-- Categories -->
-  <section class="categories" id="categories">
-    <button class="active" onclick="filterBooks('All', this)">All</button>
-    <button onclick="filterBooks('Fiction', this)">Fiction</button>
-    <button onclick="filterBooks('Technology', this)">Technology</button>
-    <button onclick="filterBooks('Business', this)">Business</button>
-    <button onclick="filterBooks('Education', this)">Education</button>
-  </section>
-
-  <!-- Products -->
-  <section class="products-section" id="books">
-    <h2 class="section-title">Popular Books</h2>
-
-    <div class="products" id="productList">
-
-      <div class="book-card" data-category="Fiction" data-name="The Silent Forest">
-        <div class="book-image">🌲</div>
-        <div class="book-info">
-          <h3>The Silent Forest</h3>
-          <p class="author">By John Carter</p>
-          <p class="price">₹499</p>
-          <button class="add-cart"
-            onclick="addToCart('The Silent Forest', 499)">
-            Add to Cart
-          </button>
-        </div>
+    <div class="md:hidden pb-3 flex gap-2">
+      <div class="flex flex-1 bg-paper border-2 border-ink/10 focus-within:border-ink rounded-xl overflow-hidden transition">
+        <input id="mobile-search" oninput="handleSearchInput(event)" placeholder="Search books, authors…" class="flex-1 px-3 py-2.5 outline-none text-sm bg-transparent min-w-0">
+        <button onclick="handleSearchSubmit(event)" class="bg-ink text-sun px-4"><i class="fa-solid fa-magnifying-glass text-sm"></i></button>
       </div>
-
-      <div class="book-card" data-category="Technology" data-name="Modern Web Development">
-        <div class="book-image">💻</div>
-        <div class="book-info">
-          <h3>Modern Web Development</h3>
-          <p class="author">By Sarah Smith</p>
-          <p class="price">₹799</p>
-          <button class="add-cart"
-            onclick="addToCart('Modern Web Development', 799)">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-
-      <div class="book-card" data-category="Business" data-name="Build Your Business">
-        <div class="book-image">📈</div>
-        <div class="book-info">
-          <h3>Build Your Business</h3>
-          <p class="author">By Michael Brown</p>
-          <p class="price">₹599</p>
-          <button class="add-cart"
-            onclick="addToCart('Build Your Business', 599)">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-
-      <div class="book-card" data-category="Education" data-name="Learn Faster">
-        <div class="book-image">🎓</div>
-        <div class="book-info">
-          <h3>Learn Faster</h3>
-          <p class="author">By Emily Johnson</p>
-          <p class="price">₹399</p>
-          <button class="add-cart"
-            onclick="addToCart('Learn Faster', 399)">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-
-      <div class="book-card" data-category="Fiction" data-name="The Last Journey">
-        <div class="book-image">🚀</div>
-        <div class="book-info">
-          <h3>The Last Journey</h3>
-          <p class="author">By David Wilson</p>
-          <p class="price">₹449</p>
-          <button class="add-cart"
-            onclick="addToCart('The Last Journey', 449)">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-
-      <div class="book-card" data-category="Technology" data-name="AI Revolution">
-        <div class="book-image">🤖</div>
-        <div class="book-info">
-          <h3>AI Revolution</h3>
-          <p class="author">By Alex Martin</p>
-          <p class="price">₹899</p>
-          <button class="add-cart"
-            onclick="addToCart('AI Revolution', 899)">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-
     </div>
-  </section>
+  </div>
+  <div id="mobile-menu" class="hidden md:hidden border-t border-ink/10 bg-white px-4 py-3 space-y-1">
+    <button onclick="navigate('home')" class="w-full text-left px-3 py-2.5 rounded-xl font-bold hover:bg-paper flex items-center gap-3"><i class="fa-solid fa-house w-5 text-ink/40"></i> Home</button>
+    <button onclick="navigate('browse')" class="w-full text-left px-3 py-2.5 rounded-xl font-bold hover:bg-paper flex items-center gap-3"><i class="fa-solid fa-book-open w-5 text-ink/40"></i> Browse Books</button>
+    <button onclick="openSell()" class="w-full text-left px-3 py-2.5 rounded-xl font-bold hover:bg-paper flex items-center gap-3"><i class="fa-solid fa-circle-plus w-5 text-ink/40"></i> Sell a Book</button>
+    <button onclick="navigate('wishlist')" class="w-full text-left px-3 py-2.5 rounded-xl font-bold hover:bg-paper flex items-center gap-3"><i class="fa-regular fa-heart w-5 text-ink/40"></i> Wishlist</button>
+    <button onclick="navigate('profile')" class="w-full text-left px-3 py-2.5 rounded-xl font-bold hover:bg-paper flex items-center gap-3"><i class="fa-regular fa-user w-5 text-ink/40"></i> My Account</button>
+    <div class="pt-2"><label class="text-xs font-bold text-ink/50 uppercase tracking-wider">Location</label><select onchange="setLocation(this.value)" id="mobile-location" class="mt-1 w-full bg-paper border rounded-xl px-3 py-2.5 font-bold text-sm outline-none"><option>All Locations</option><option>Mumbai</option><option>Delhi</option><option>Bangalore</option><option>Pune</option><option>Hyderabad</option><option>Chennai</option><option>Kolkata</option><option>Ahmedabad</option></select></div>
+  </div>
+</header>
 
-  <!-- Cart -->
-  <div class="cart-overlay" id="cartOverlay">
-
-    <div class="cart">
-
-      <div class="cart-header">
-        <h2>Shopping Cart</h2>
-        <button class="close-cart" onclick="closeCart()">×</button>
+<main>
+<!-- ============ HOME ============ -->
+<section id="view-home" class="view">
+  <div class="relative overflow-hidden bg-gradient-to-br from-cream via-paper to-[#FFF0B8]">
+    <div class="hero-pattern absolute inset-0"></div>
+    <div class="absolute -top-24 -right-24 w-96 h-96 bg-sun/30 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-tealx/20 rounded-full blur-3xl"></div>
+    <div class="max-w-7xl mx-auto px-4 py-10 lg:py-16 grid lg:grid-cols-[1.05fr_.95fr] gap-10 items-center relative">
+      <div>
+        <div class="inline-flex items-center gap-2 bg-white border border-ink/10 rounded-full pl-2 pr-4 py-1.5 text-xs font-bold shadow-sm mb-5"><span class="bg-green-500 text-white px-2 py-0.5 rounded-full text-[10px] flex items-center gap-1"><span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span> LIVE</span> 2,347 books sold this week</div>
+        <h1 class="font-display text-4xl sm:text-5xl lg:text-[3.8rem] font-black leading-[1.04] tracking-tight">Give every book<br><span class="relative inline-block">a second story.<svg class="absolute -bottom-2 left-0 w-full" height="12" viewBox="0 0 300 12" preserveAspectRatio="none"><path d="M2 9 Q 75 2 150 7 T 298 5" stroke="#FFCE32" stroke-width="6" fill="none" stroke-linecap="round"/></svg></span></h1>
+        <p class="mt-5 text-ink/60 text-base sm:text-lg max-w-xl leading-relaxed">Buy pre-loved books at up to <strong class="text-ink">70% off MRP</strong>. Sell your shelf in 60 seconds. India's most loved second-hand book bazaar.</p>
+        <div class="mt-6 bg-white rounded-2xl p-2 shadow-card border border-ink/10 flex flex-col sm:flex-row gap-2 max-w-xl">
+          <div class="flex flex-1 items-center gap-2 px-3 py-1"><i class="fa-solid fa-magnifying-glass text-ink/30"></i><input id="hero-search" onkeydown="if(event.key==='Enter')heroSearch()" placeholder="Try 'Atomic Habits' or 'Dune'…" class="flex-1 outline-none text-sm font-medium bg-transparent py-2 min-w-0"></div>
+          <button onclick="heroSearch()" class="bg-ink text-white rounded-xl px-6 py-3 font-bold text-sm hover:bg-inkLight transition flex items-center justify-center gap-2"><i class="fa-solid fa-book-open"></i> Search Books</button>
+        </div>
+        <div class="mt-3 flex flex-wrap items-center gap-2 text-xs font-semibold"><span class="text-ink/40">Popular:</span><button onclick="quickSearch('Atomic Habits')" class="bg-white border border-ink/10 rounded-full px-3 py-1.5 hover:border-ink hover:shadow-popSm hover:-translate-y-0.5 transition">Atomic Habits</button><button onclick="quickSearch('Harry Potter')" class="bg-white border border-ink/10 rounded-full px-3 py-1.5 hover:border-ink hover:shadow-popSm hover:-translate-y-0.5 transition">Harry Potter</button><button onclick="quickSearch('Dune')" class="bg-white border border-ink/10 rounded-full px-3 py-1.5 hover:border-ink hover:shadow-popSm hover:-translate-y-0.5 transition">Dune</button><button onclick="quickSearch('Finance')" class="bg-white border border-ink/10 rounded-full px-3 py-1.5 hover:border-ink hover:shadow-popSm hover:-translate-y-0.5 transition">Finance</button></div>
+        <div class="mt-8 grid grid-cols-3 gap-4 max-w-md">
+          <div><div class="font-display font-black text-2xl sm:text-3xl"><span data-count="25">0</span>K+</div><div class="text-xs font-bold text-ink/50 uppercase tracking-wide">Books listed</div></div>
+          <div class="border-x border-ink/10 px-4"><div class="font-display font-black text-2xl sm:text-3xl"><span data-count="48">0</span>K+</div><div class="text-xs font-bold text-ink/50 uppercase tracking-wide">Happy readers</div></div>
+          <div><div class="font-display font-black text-2xl sm:text-3xl flex items-center gap-1">4.9 <i class="fa-solid fa-star text-sunDark text-lg"></i></div><div class="text-xs font-bold text-ink/50 uppercase tracking-wide">Avg rating</div></div>
+        </div>
       </div>
-
-      <div id="cartItems">
-        <p>Your cart is empty.</p>
+      <div class="relative hidden md:block h-[480px]">
+        <div class="absolute left-4 top-8 w-56 book-3d animate-floaty"><div class="bg-white rounded-2xl shadow-2xl overflow-hidden border-4 border-white"><img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=500&auto=format&fit=crop" class="w-full h-64 object-cover" alt="book" onerror="this.src='https://picsum.photos/seed/hero1/500/600'"><div class="p-3"><div class="font-extrabold text-sm">Atomic Habits</div><div class="flex items-center justify-between mt-1"><span class="font-black text-ink">₹349</span><span class="text-xs line-through text-ink/40">₹899</span></div></div></div></div>
+        <div class="absolute right-8 top-0 w-60 book-3d animate-floaty2" style="animation-delay:.8s"><div class="bg-white rounded-2xl shadow-2xl overflow-hidden border-4 border-white"><img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=500&auto=format&fit=crop" class="w-full h-72 object-cover" alt="book" onerror="this.src='https://picsum.photos/seed/hero2/500/600'"><div class="p-3"><div class="flex items-center gap-2"><span class="bg-green-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">BRAND NEW</span></div><div class="font-extrabold text-sm mt-1">Dune • Deluxe Edition</div><div class="font-black mt-0.5">₹549</div></div></div></div>
+        <div class="absolute left-0 bottom-6 bg-white rounded-2xl shadow-card border p-3 flex items-center gap-3 animate-floaty" style="animation-delay:1.4s"><div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center"><i class="fa-solid fa-check text-green-600"></i></div><div><div class="text-xs font-extrabold">SOLD in 12 mins</div><div class="text-xs text-ink/50">Psychology of Money • ₹279</div></div></div>
+        <div class="absolute right-2 bottom-16 bg-ink text-white rounded-2xl shadow-card p-3 flex items-center gap-3 animate-floaty2" style="animation-delay:.4s"><img src="https://i.pravatar.cc/60?img=32" class="w-10 h-10 rounded-full border-2 border-sun" alt="seller"><div><div class="text-xs font-extrabold">Sneha just listed 3 books</div><div class="text-[11px] text-white/60">Hyderabad • 2 min ago</div></div></div>
+        <div class="absolute left-1/3 top-2 bg-sun border-2 border-ink rounded-full px-4 py-1.5 font-extrabold text-xs shadow-popSm rotate-[-6deg]">UP TO 70% OFF MRP</div>
       </div>
-
-      <div class="cart-total">
-        Total: ₹<span id="cartTotal">0</span>
-      </div>
-
-      <button class="checkout" onclick="checkout()">
-        Proceed to Checkout
-      </button>
-
     </div>
-
+    <div class="bg-ink text-sun py-2.5 overflow-hidden relative"><div class="marquee-track gap-8 text-xs sm:text-sm font-extrabold tracking-widest uppercase"><span class="flex gap-8 pr-8" id="marquee-a"></span><span class="flex gap-8 pr-8" id="marquee-b"></span></div></div>
   </div>
 
-  <!-- Footer -->
-  <footer id="contact">
-    <p>© 2026 BookNest. All rights reserved.</p>
-    <p>Made for book lovers 📚</p>
-  </footer>
+  <div class="max-w-7xl mx-auto px-4 pt-10">
+    <div class="flex items-end justify-between mb-5"><div><h2 class="font-display font-black text-2xl sm:text-3xl">Browse by category</h2><p class="text-sm text-ink/50 font-medium mt-1">12 curated shelves • updated hourly</p></div><button onclick="navigate('browse')" class="hidden sm:flex items-center gap-2 text-sm font-extrabold hover:gap-3 transition-all">View all <i class="fa-solid fa-arrow-right"></i></button></div>
+    <div id="home-categories" class="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4"></div>
+  </div>
 
-  <script>
-    let cart = [];
+  <div class="max-w-7xl mx-auto px-4 py-10">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+      <div><div class="flex items-center gap-2 text-xs font-extrabold text-green-700 bg-green-100 w-fit px-3 py-1 rounded-full mb-2"><span class="w-1.5 h-1.5 bg-green-600 rounded-full animate-pulse"></span> FRESH TODAY</div><h2 class="font-display font-black text-2xl sm:text-3xl">Fresh recommendations</h2><p class="text-sm text-ink/50 font-medium mt-1">Handpicked for you from 2,000+ sellers</p></div>
+      <div class="flex bg-white border border-ink/10 rounded-full p-1 gap-1 w-fit shadow-sm" id="home-tabs">
+        <button onclick="setHomeTab('all')" data-htab="all" class="tab-active px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold transition">All</button>
+        <button onclick="setHomeTab('new')" data-htab="new" class="px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold text-ink/60 hover:text-ink transition">New</button>
+        <button onclick="setHomeTab('used')" data-htab="used" class="px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold text-ink/60 hover:text-ink transition">Pre-loved</button>
+        <button onclick="setHomeTab('under250')" data-htab="under250" class="px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold text-ink/60 hover:text-ink transition whitespace-nowrap">Under ₹250</button>
+      </div>
+    </div>
+    <div id="home-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"></div>
+    <div class="text-center mt-8"><button onclick="navigate('browse')" class="bg-white border-2 border-ink font-extrabold px-8 py-3 rounded-2xl shadow-pop hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none transition-all text-sm">Explore all books <i class="fa-solid fa-arrow-right ml-2"></i></button></div>
+  </div>
 
-    // Add product to cart
-    function addToCart(name, price) {
-      const existingItem = cart.find(item => item.name === name);
+  <div class="max-w-7xl mx-auto px-4 pb-10">
+    <div class="bg-ink text-white rounded-3xl overflow-hidden grid md:grid-cols-2 relative">
+      <div class="dot-grid absolute inset-0 opacity-30"></div>
+      <div class="p-8 lg:p-12 relative">
+        <span class="bg-sun text-ink text-[11px] font-extrabold px-3 py-1 rounded-full tracking-widest uppercase">For Sellers</span>
+        <h3 class="font-display font-black text-3xl lg:text-4xl mt-4 leading-tight">Turn your shelf into cash in 60 seconds.</h3>
+        <p class="text-white/60 mt-3 text-sm sm:text-base">Snap a photo, set your price, get paid on pickup. Zero listing fee. 4.9★ seller support.</p>
+        <ul class="mt-5 space-y-2.5 text-sm font-semibold"><li class="flex items-center gap-3"><span class="w-7 h-7 bg-tealx/20 rounded-lg flex items-center justify-center"><i class="fa-solid fa-camera text-tealx text-xs"></i></span> Free photo & price guidance</li><li class="flex items-center gap-3"><span class="w-7 h-7 bg-tealx/20 rounded-lg flex items-center justify-center"><i class="fa-solid fa-truck-fast text-tealx text-xs"></i></span> Doorstep pickup in 40+ cities</li><li class="flex items-center gap-3"><span class="w-7 h-7 bg-tealx/20 rounded-lg flex items-center justify-center"><i class="fa-solid fa-indian-rupee-sign text-tealx text-xs"></i></span> Instant UPI payout on delivery</li></ul>
+        <div class="mt-7 flex flex-wrap gap-3"><button onclick="openSell()" class="bg-sun text-ink font-extrabold px-7 py-3.5 rounded-2xl hover:bg-white transition text-sm"><i class="fa-solid fa-plus mr-2"></i>Start Selling — It's Free</button><button onclick="navigate('browse')" class="border-2 border-white/20 font-bold px-6 py-3.5 rounded-2xl hover:border-white transition text-sm">See what sells</button></div>
+      </div>
+      <div class="relative min-h-[280px]">
+        <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=800&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover" alt="library" onerror="this.src='https://picsum.photos/seed/sell/800/600'">
+        <div class="absolute inset-0 bg-gradient-to-r from-ink via-ink/20 to-transparent"></div>
+        <div class="absolute bottom-6 right-6 left-6 sm:left-auto bg-white text-ink rounded-2xl p-4 shadow-2xl flex items-center gap-4 pop-in"><div class="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center shrink-0"><i class="fa-solid fa-wallet text-green-600 text-xl"></i></div><div><div class="text-xs font-bold text-ink/50 uppercase tracking-wide">Avg. seller earns</div><div class="font-display font-black text-2xl">₹4,280<span class="text-sm font-body font-bold text-ink/40">/month</span></div></div><div class="ml-auto bg-green-500 text-white text-xs font-extrabold px-2 py-1 rounded-lg">+18%</div></div>
+      </div>
+    </div>
+  </div>
 
-      if (existingItem) {
-        existingItem.quantity++;
-      } else {
-        cart.push({
-          name: name,
-          price: price,
-          quantity: 1
-        });
-      }
+  <div class="bg-white border-y border-ink/10 py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center max-w-xl mx-auto"><span class="text-xs font-extrabold tracking-[.2em] uppercase text-ink/40">How BookOLX works</span><h2 class="font-display font-black text-3xl mt-2">Old-school bazaar, new-school ease</h2></div>
+      <div class="grid sm:grid-cols-3 gap-4 sm:gap-6 mt-8">
+        <div class="bg-paper rounded-3xl p-6 border border-ink/10 hover:shadow-card hover:-translate-y-1 transition-all relative overflow-hidden"><div class="font-display font-black text-6xl text-ink/10 absolute top-3 right-5">01</div><div class="w-12 h-12 bg-ink rounded-2xl flex items-center justify-center shadow-popSm"><i class="fa-solid fa-magnifying-glass text-sun"></i></div><h3 class="font-extrabold text-lg mt-4">Discover & Chat</h3><p class="text-sm text-ink/55 mt-2 leading-relaxed">Search 25,000+ new & pre-loved books. Filter by condition, price and city. Chat with verified sellers instantly.</p></div>
+        <div class="bg-paper rounded-3xl p-6 border border-ink/10 hover:shadow-card hover:-translate-y-1 transition-all relative overflow-hidden"><div class="font-display font-black text-6xl text-ink/10 absolute top-3 right-5">02</div><div class="w-12 h-12 bg-sun border-2 border-ink rounded-2xl flex items-center justify-center shadow-popSm"><i class="fa-solid fa-cart-shopping text-ink"></i></div><h3 class="font-extrabold text-lg mt-4">Pay Securely</h3><p class="text-sm text-ink/55 mt-2 leading-relaxed">UPI, cards or cash on delivery. Money is held safely until you confirm the book matches its condition.</p></div>
+        <div class="bg-paper rounded-3xl p-6 border border-ink/10 hover:shadow-card hover:-translate-y-1 transition-all relative overflow-hidden"><div class="font-display font-black text-6xl text-ink/10 absolute top-3 right-5">03</div><div class="w-12 h-12 bg-tealx border-2 border-ink rounded-2xl flex items-center justify-center shadow-popSm"><i class="fa-solid fa-book-open-reader text-ink"></i></div><h3 class="font-extrabold text-lg mt-4">Read & Re-sell</h3><p class="text-sm text-ink/55 mt-2 leading-relaxed">Enjoy doorstep delivery in 2–4 days. Finished reading? Re-list in one tap and keep the story going.</p></div>
+      </div>
+      <div class="mt-8 flex flex-wrap justify-center gap-3 text-xs font-extrabold">
+        <span class="flex items-center gap-2 bg-green-50 border border-green-200 text-green-800 px-4 py-2 rounded-full"><i class="fa-solid fa-shield-halved"></i> Buyer Protection</span>
+        <span class="flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-800 px-4 py-2 rounded-full"><i class="fa-solid fa-rotate-left"></i> 7-Day Easy Returns</span>
+        <span class="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-800 px-4 py-2 rounded-full"><i class="fa-solid fa-badge-check"></i> Verified Sellers</span>
+        <span class="flex items-center gap-2 bg-purple-50 border border-purple-200 text-purple-800 px-4 py-2 rounded-full"><i class="fa-solid fa-leaf"></i> 1 Book = 2.7kg CO₂ Saved</span>
+      </div>
+    </div>
+  </div>
 
-      updateCart();
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="flex items-end justify-between mb-6"><div><h2 class="font-display font-black text-2xl sm:text-3xl">Loved by readers across India</h2><div class="flex items-center gap-2 mt-2 text-sm"><span class="flex text-sunDark"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span><strong>4.9/5</strong><span class="text-ink/40">• 12,400+ reviews</span></div></div></div>
+    <div class="grid sm:grid-cols-3 gap-4" id="testimonials"></div>
+    <div class="mt-10 bg-gradient-to-r from-sun via-[#FFE27A] to-sun rounded-3xl border-2 border-ink shadow-pop p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-5">
+      <div class="w-14 h-14 bg-ink rounded-2xl flex items-center justify-center shrink-0 rotate-3"><i class="fa-solid fa-gift text-sun text-2xl"></i></div>
+      <div class="flex-1 text-center sm:text-left"><h3 class="font-display font-black text-xl sm:text-2xl">Get ₹100 off your first pre-loved haul</h3><p class="text-sm font-semibold text-ink/60 mt-1">Join 48,000+ readers. Weekly drops, seller tips & exclusive coupons.</p></div>
+      <form onsubmit="subscribeNewsletter(event)" class="flex w-full sm:w-auto gap-2"><input required type="email" placeholder="you@email.com" class="flex-1 sm:w-56 px-4 py-3 rounded-xl border-2 border-ink outline-none text-sm font-semibold bg-white"><button class="bg-ink text-white font-extrabold px-5 py-3 rounded-xl text-sm hover:bg-inkLight whitespace-nowrap">Claim ₹100</button></form>
+    </div>
+  </div>
+</section>
 
-      alert(name + " added to cart!");
-    }
+<!-- ============ BROWSE ============ -->
+<section id="view-browse" class="view hidden">
+  <div class="max-w-7xl mx-auto px-4 py-6">
+    <div class="flex items-center gap-2 text-xs font-bold text-ink/40"><button onclick="navigate('home')" class="hover:text-ink">Home</button><i class="fa-solid fa-chevron-right text-[10px]"></i><span class="text-ink">Browse Books</span></div>
+    <div class="mt-3 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+      <div><h1 class="font-display font-black text-3xl sm:text-4xl">Explore the bazaar</h1><p class="text-sm font-semibold text-ink/50 mt-1"><span id="browse-count">0</span> books found • <span class="text-green-700">updated 5 min ago</span></p></div>
+      <div class="flex items-center gap-2">
+        <button onclick="openMobileFilters()" class="lg:hidden flex items-center gap-2 bg-ink text-white font-bold text-sm px-4 py-2.5 rounded-xl"><i class="fa-solid fa-sliders"></i> Filters <span id="mobile-filter-count" class="hidden bg-sun text-ink text-[11px] w-5 h-5 rounded-full items-center justify-center font-extrabold">0</span></button>
+        <div class="flex items-center gap-2 bg-white border border-ink/15 rounded-xl px-3 py-2.5"><i class="fa-solid fa-arrow-down-wide-short text-ink/40 text-sm"></i><select id="browse-sort" onchange="setSort(this.value)" class="bg-transparent text-sm font-bold outline-none cursor-pointer"><option value="featured">Sort: Featured</option><option value="newest">Newest First</option><option value="price-low">Price: Low → High</option><option value="price-high">Price: High → Low</option><option value="rating">Top Rated</option><option value="discount">Biggest Discount</option></select></div>
+      </div>
+    </div>
+    <div id="active-chips" class="flex flex-wrap gap-2 mt-4"></div>
+    <div class="flex gap-6 mt-5 items-start">
+      <aside class="hidden lg:block w-72 shrink-0 sticky top-32 max-h-[calc(100vh-9rem)] overflow-y-auto no-scrollbar">
+        <div class="bg-white rounded-3xl border border-ink/10 p-5 shadow-sm space-y-6" id="desktop-filters"></div>
+      </aside>
+      <div class="flex-1 min-w-0">
+        <div class="bg-white border border-ink/10 rounded-2xl p-2 flex items-center gap-2 mb-4"><i class="fa-solid fa-magnifying-glass text-ink/30 ml-2"></i><input id="browse-search" oninput="setSearch(this.value)" placeholder="Search within results…" class="flex-1 outline-none text-sm font-medium bg-transparent py-1.5 min-w-0"><button onclick="clearFilters()" class="text-xs font-extrabold text-red-600 hover:bg-red-50 px-3 py-1.5 rounded-lg whitespace-nowrap">Clear all</button></div>
+        <div id="browse-grid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-5"></div>
+        <div id="browse-empty" class="hidden text-center py-16 bg-white rounded-3xl border border-dashed border-ink/20">
+          <div class="w-20 h-20 bg-paper rounded-full flex items-center justify-center mx-auto"><i class="fa-solid fa-book-open text-3xl text-ink/20"></i></div>
+          <h3 class="font-display font-black text-xl mt-4">No books match those filters</h3><p class="text-sm text-ink/50 mt-1">Try widening the price range or clearing categories.</p>
+          <button onclick="clearFilters()" class="mt-4 bg-ink text-white font-bold text-sm px-6 py-2.5 rounded-xl">Clear all filters</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    // Update cart
-    function updateCart() {
-      const cartItems = document.getElementById("cartItems");
-      const cartCount = document.getElementById("cartCount");
-      const cartTotal = document.getElementById("cartTotal");
+<!-- ============ DETAILS ============ -->
+<section id="view-details" class="view hidden"><div id="details-content" class="max-w-7xl mx-auto px-4 py-6"></div></section>
+<!-- ============ CART ============ -->
+<section id="view-cart" class="view hidden"><div id="cart-content" class="max-w-7xl mx-auto px-4 py-6"></div></section>
+<!-- ============ CHECKOUT ============ -->
+<section id="view-checkout" class="view hidden"><div id="checkout-content" class="max-w-7xl mx-auto px-4 py-6"></div></section>
+<!-- ============ PROFILE ============ -->
+<section id="view-profile" class="view hidden"><div id="profile-content" class="max-w-7xl mx-auto px-4 py-6"></div></section>
+<!-- ============ WISHLIST ============ -->
+<section id="view-wishlist" class="view hidden"><div id="wishlist-content" class="max-w-7xl mx-auto px-4 py-6"></div></section>
+<!-- ============ SUCCESS ============ -->
+<section id="view-success" class="view hidden"><div id="success-content" class="max-w-3xl mx-auto px-4 py-10"></div></section>
 
-      cartItems.innerHTML = "";
-
-      let total = 0;
-      let count = 0;
-
-      if (cart.length === 0) {
-        cartItems.innerHTML = "<p>Your cart is empty.</p>";
-      }
-
-      cart.forEach((item, index) => {
-
-        total += item.price * item.quantity;
-        count += item.quantity;
-
-        const div = document.createElement("div");
-
-        div.className = "cart-item";
-
-        div.innerHTML = `
-          <div>
-            <h4>${item.name}</h4>
-            <p>₹${item.price} × ${item.quantity}</p>
+<!-- ============ SELL ============ -->
+<section id="view-sell" class="view hidden">
+  <div class="max-w-7xl mx-auto px-4 py-6">
+    <div class="flex items-center gap-2 text-xs font-bold text-ink/40"><button onclick="navigate('home')" class="hover:text-ink">Home</button><i class="fa-solid fa-chevron-right text-[10px]"></i><span class="text-ink" id="sell-crumb">Sell a Book</span></div>
+    <div class="mt-3 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+      <div><h1 class="font-display font-black text-3xl sm:text-4xl" id="sell-title">List your book</h1><p class="text-sm font-semibold text-ink/50 mt-1">Free forever • Takes ~60 seconds • Live instantly</p></div>
+      <div class="flex gap-2 text-xs font-bold"><span class="bg-white border px-3 py-1.5 rounded-full">① Details</span><span class="bg-white border px-3 py-1.5 rounded-full">② Photos</span><span class="bg-sun border border-ink px-3 py-1.5 rounded-full">③ Go Live 🚀</span></div>
+    </div>
+    <form onsubmit="handleSellSubmit(event)" class="grid lg:grid-cols-[1fr_380px] gap-6 mt-6 items-start">
+      <div class="space-y-5">
+        <div class="bg-white rounded-3xl border border-ink/10 p-5 sm:p-7 shadow-sm">
+          <h3 class="font-extrabold text-lg flex items-center gap-2"><span class="w-8 h-8 bg-ink text-sun rounded-xl flex items-center justify-center text-sm">1</span> Book details</h3>
+          <div class="grid sm:grid-cols-2 gap-4 mt-5">
+            <div class="sm:col-span-2"><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Title *</label><input id="sell-book-title" oninput="updateSellPreview()" required placeholder="e.g. Atomic Habits" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition"></div>
+            <div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Author *</label><input id="sell-author" oninput="updateSellPreview()" required placeholder="e.g. James Clear" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition"></div>
+            <div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Category *</label><select id="sell-category" onchange="updateSellPreview()" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition cursor-pointer"><option>Fiction</option><option>Classics</option><option>Fantasy</option><option>Sci-Fi</option><option>Self-Help</option><option>Business</option><option>History</option><option>Technology</option><option>Finance</option><option>Memoir</option><option>Design</option><option>Psychology</option></select></div>
+            <div class="sm:col-span-2"><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Description * <span class="normal-case font-semibold">(min 20 characters)</span></label><textarea id="sell-description" oninput="updateSellPreview()" required rows="4" placeholder="Condition notes, markings, why you're selling, what's included…" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-medium outline-none transition resize-none"></textarea><div class="text-right text-[11px] font-bold text-ink/40 mt-1"><span id="sell-desc-count">0</span>/500</div></div>
+            <div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Pages</label><input id="sell-pages" type="number" min="1" placeholder="320" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition"></div>
+            <div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">ISBN</label><input id="sell-isbn" placeholder="978-…" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition"></div>
+            <div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Language</label><select id="sell-language" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition cursor-pointer"><option>English</option><option>Hindi</option><option>Hinglish</option><option>Marathi</option><option>Tamil</option><option>Other</option></select></div>
+            <div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Copies in stock</label><input id="sell-stock" type="number" min="1" max="20" value="1" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition"></div>
           </div>
+        </div>
+        <div class="bg-white rounded-3xl border border-ink/10 p-5 sm:p-7 shadow-sm">
+          <h3 class="font-extrabold text-lg flex items-center gap-2"><span class="w-8 h-8 bg-sun border-2 border-ink rounded-xl flex items-center justify-center text-sm">2</span> Condition & pricing</h3>
+          <div class="mt-5">
+            <label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Is this book new or pre-loved? *</label>
+            <div class="grid grid-cols-2 gap-3 mt-2">
+              <label class="cursor-pointer"><input type="radio" name="sell-type" value="new" class="peer hidden" onchange="updateSellPreview()"><div class="peer-checked:bg-green-50 peer-checked:border-green-500 peer-checked:shadow-card border-2 border-ink/10 rounded-2xl p-4 text-center transition"><i class="fa-solid fa-sparkles text-green-600 text-xl"></i><div class="font-extrabold text-sm mt-1">Brand New</div><div class="text-[11px] text-ink/50 font-semibold">Sealed / unread</div></div></label>
+              <label class="cursor-pointer"><input type="radio" name="sell-type" value="used" checked class="peer hidden" onchange="updateSellPreview()"><div class="peer-checked:bg-amber-50 peer-checked:border-amber-500 peer-checked:shadow-card border-2 border-ink/10 rounded-2xl p-4 text-center transition"><i class="fa-solid fa-book-open text-amber-600 text-xl"></i><div class="font-extrabold text-sm mt-1">Pre-loved</div><div class="text-[11px] text-ink/50 font-semibold">Gently used</div></div></label>
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-3 gap-4 mt-4">
+            <div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Condition *</label><select id="sell-condition" onchange="updateSellPreview()" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition cursor-pointer"><option>New</option><option selected>Like New</option><option>Very Good</option><option>Good</option><option>Acceptable</option></select></div>
+            <div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Your price (₹) *</label><input id="sell-price" oninput="updateSellPreview()" type="number" min="1" required placeholder="299" class="mt-1.5 w-full bg-paper border-2 border-sun focus:border-ink rounded-xl px-4 py-3 text-sm font-extrabold outline-none transition"></div>
+            <div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">MRP (₹)</label><input id="sell-mrp" oninput="updateSellPreview()" type="number" min="0" placeholder="599" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition"></div>
+          </div>
+          <div id="sell-price-hint" class="mt-3 text-xs font-bold bg-green-50 border border-green-200 text-green-800 rounded-xl px-3 py-2"></div>
+          <div class="mt-4"><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Pickup city *</label><select id="sell-location" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition cursor-pointer"><option>Mumbai, MH</option><option>Delhi, DL</option><option>Bangalore, KA</option><option>Pune, MH</option><option>Hyderabad, TS</option><option>Chennai, TN</option><option>Kolkata, WB</option><option>Ahmedabad, GJ</option><option>Jaipur, RJ</option></select></div>
+        </div>
+        <div class="bg-white rounded-3xl border border-ink/10 p-5 sm:p-7 shadow-sm">
+          <h3 class="font-extrabold text-lg flex items-center gap-2"><span class="w-8 h-8 bg-tealx border-2 border-ink rounded-xl flex items-center justify-center text-sm">3</span> Photos</h3>
+          <div class="grid sm:grid-cols-2 gap-4 mt-5">
+            <label class="border-2 border-dashed border-ink/20 hover:border-ink rounded-2xl p-6 text-center cursor-pointer transition bg-paper/50 block"><i class="fa-solid fa-cloud-arrow-up text-3xl text-ink/30"></i><div class="font-extrabold text-sm mt-2">Upload cover photo</div><div class="text-xs text-ink/50 font-medium">JPG/PNG up to 5MB</div><input type="file" accept="image/*" class="hidden" onchange="handleSellImageFile(event)"></label>
+            <div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">…or paste image URL</label><input id="sell-image-url" oninput="handleSellImageUrl(this.value)" placeholder="https://…" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-medium outline-none transition"><div class="mt-3 rounded-2xl overflow-hidden bg-paper border relative h-28"><img id="sell-image-preview" src="" class="w-full h-full object-cover hidden" alt="preview"><div id="sell-image-empty" class="absolute inset-0 flex flex-col items-center justify-center text-ink/30"><i class="fa-regular fa-image text-2xl"></i><span class="text-xs font-bold mt-1">Preview appears here</span></div><button type="button" id="sell-image-remove" onclick="removeSellImage()" class="hidden absolute top-2 right-2 w-7 h-7 bg-red-500 text-white rounded-full text-xs"><i class="fa-solid fa-xmark"></i></button></div></div>
+          </div>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button type="button" onclick="cancelSell()" class="sm:w-40 border-2 border-ink/20 font-extrabold py-3.5 rounded-2xl text-sm hover:border-ink transition">Cancel</button>
+          <button type="submit" id="sell-submit-btn" class="flex-1 bg-ink text-white font-extrabold py-3.5 rounded-2xl text-sm hover:bg-inkLight transition shadow-card flex items-center justify-center gap-2"><i class="fa-solid fa-rocket"></i> Publish Listing — Go Live</button>
+        </div>
+      </div>
+      <div class="lg:sticky lg:top-32 space-y-4">
+        <div class="bg-white rounded-3xl border border-ink/10 p-5 shadow-sm"><div class="flex items-center justify-between mb-3"><h4 class="font-extrabold text-sm">🔴 Live preview</h4><span class="text-[10px] font-extrabold bg-green-100 text-green-700 px-2 py-1 rounded-full">UPDATES AS YOU TYPE</span></div><div id="sell-preview-card"></div></div>
+        <div class="bg-ink text-white rounded-3xl p-5 relative overflow-hidden"><div class="dot-grid absolute inset-0 opacity-20"></div><div class="relative"><h4 class="font-extrabold text-sm">💡 Sell 3× faster</h4><ul class="text-xs text-white/70 font-medium mt-2 space-y-1.5"><li>• Price 40–60% below MRP for quick sale</li><li>• Natural light photos get 2× more chats</li><li>• Mention markings honestly — builds trust</li><li>• Reply within 1 hour to close deals</li></ul></div></div>
+      </div>
+    </form>
+  </div>
+</section>
+</main>
 
-          <button
-            class="remove-btn"
-            onclick="removeFromCart(${index})">
-            Remove
-          </button>
-        `;
+<!-- FOOTER -->
+<footer class="bg-ink text-white mt-10 relative overflow-hidden">
+  <div class="dot-grid absolute inset-0 opacity-10"></div>
+  <div class="max-w-7xl mx-auto px-4 py-12 relative grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    <div><div class="flex items-center gap-2"><div class="w-10 h-10 bg-sun rounded-xl flex items-center justify-center"><i class="fa-solid fa-book-open text-ink"></i></div><div class="font-display font-black text-xl">BookOLX</div></div><p class="text-sm text-white/50 mt-3 leading-relaxed">India's friendliest second-hand book bazaar. Every pre-loved book saves money, paper and 2.7kg of CO₂.</p><div class="flex gap-2 mt-4"><a class="w-9 h-9 bg-white/10 hover:bg-sun hover:text-ink rounded-xl flex items-center justify-center transition cursor-pointer"><i class="fa-brands fa-x-twitter text-sm"></i></a><a class="w-9 h-9 bg-white/10 hover:bg-sun hover:text-ink rounded-xl flex items-center justify-center transition cursor-pointer"><i class="fa-brands fa-instagram text-sm"></i></a><a class="w-9 h-9 bg-white/10 hover:bg-sun hover:text-ink rounded-xl flex items-center justify-center transition cursor-pointer"><i class="fa-brands fa-youtube text-sm"></i></a><a class="w-9 h-9 bg-white/10 hover:bg-sun hover:text-ink rounded-xl flex items-center justify-center transition cursor-pointer"><i class="fa-brands fa-linkedin text-sm"></i></a></div></div>
+    <div><h4 class="font-extrabold text-sm tracking-widest uppercase text-sun">Marketplace</h4><ul class="mt-4 space-y-2.5 text-sm font-medium text-white/60"><li><button onclick="navigate('browse')" class="hover:text-white">Browse all books</button></li><li><button onclick="setCategoryAndBrowse('Fiction')" class="hover:text-white">Fiction</button></li><li><button onclick="setCategoryAndBrowse('Self-Help')" class="hover:text-white">Self-Help</button></li><li><button onclick="setCategoryAndBrowse('Business')" class="hover:text-white">Business</button></li><li><button onclick="openSell()" class="hover:text-white">Sell your books</button></li></ul></div>
+    <div><h4 class="font-extrabold text-sm tracking-widest uppercase text-sun">Support</h4><ul class="mt-4 space-y-2.5 text-sm font-medium text-white/60"><li><button onclick="showToast('Help center opening soon','info')" class="hover:text-white">Help Center</button></li><li><button onclick="showToast('Buyer protection: full refund if book mismatches','info')" class="hover:text-white">Buyer Protection</button></li><li><button onclick="showToast('7-day easy returns on all orders','info')" class="hover:text-white">Returns & Refunds</button></li><li><button onclick="showToast('Shipping: 2-4 days, free over ₹500','info')" class="hover:text-white">Shipping Info</button></li><li><button onclick="resetDemoData()" class="hover:text-white">Reset demo data</button></li></ul></div>
+    <div><h4 class="font-extrabold text-sm tracking-widest uppercase text-sun">Frontend Stack</h4><div class="flex flex-wrap gap-2 mt-4"><span class="bg-white/10 border border-white/10 text-xs font-bold px-3 py-1.5 rounded-full">▲ Next.js</span><span class="bg-white/10 border border-white/10 text-xs font-bold px-3 py-1.5 rounded-full">⚛ React</span><span class="bg-white/10 border border-white/10 text-xs font-bold px-3 py-1.5 rounded-full">TS TypeScript</span><span class="bg-white/10 border border-white/10 text-xs font-bold px-3 py-1.5 rounded-full">🌊 Tailwind CSS</span><span class="bg-white/10 border border-white/10 text-xs font-bold px-3 py-1.5 rounded-full">💾 localStorage</span><span class="bg-white/10 border border-white/10 text-xs font-bold px-3 py-1.5 rounded-full">{ } Mock JSON</span></div><p class="text-[11px] text-white/40 mt-4 font-medium">100% frontend demo • Cart, listings & user state persist in your browser.</p></div>
+  </div>
+  <div class="border-t border-white/10 relative"><div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-semibold text-white/40"><span>© 2026 BookOLX • Made with 📚 in India • OLX-inspired concept demo</span><span class="flex items-center gap-3"><span>UPI</span><span>Visa</span><span>Mastercard</span><span>COD</span></span></div></div>
+</footer>
 
-        cartItems.appendChild(div);
-      });
+<!-- MOBILE BOTTOM NAV -->
+<nav class="md:hidden fixed bottom-0 inset-x-0 bg-white/98 backdrop-blur border-t border-ink/10 z-40" style="padding-bottom:env(safe-area-inset-bottom)">
+  <div class="grid grid-cols-5 gap-1 px-2 pt-2 pb-2">
+    <button onclick="navigate('home')" data-mnav="home" class="flex flex-col items-center gap-1 py-1.5 rounded-xl text-[10px] font-extrabold text-ink/40"><i class="fa-solid fa-house text-lg"></i>Home</button>
+    <button onclick="navigate('browse')" data-mnav="browse" class="flex flex-col items-center gap-1 py-1.5 rounded-xl text-[10px] font-extrabold text-ink/40"><i class="fa-solid fa-magnifying-glass text-lg"></i>Search</button>
+    <button onclick="openSell()" class="flex flex-col items-center -mt-7"><span class="w-14 h-14 bg-sun border-[3px] border-ink rounded-2xl flex items-center justify-center shadow-pop rotate-3 active:rotate-0 transition"><i class="fa-solid fa-plus text-ink text-xl"></i></span><span class="text-[10px] font-extrabold mt-1">SELL</span></button>
+    <button onclick="navigate('wishlist')" data-mnav="wishlist" class="relative flex flex-col items-center gap-1 py-1.5 rounded-xl text-[10px] font-extrabold text-ink/40"><i class="fa-regular fa-heart text-lg"></i>Saved<span id="badge-wishlist-m" class="hidden absolute top-0 right-4 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] rounded-full items-center justify-center">0</span></button>
+    <button onclick="navigate('profile')" data-mnav="profile" class="flex flex-col items-center gap-1 py-1.5 rounded-xl text-[10px] font-extrabold text-ink/40"><i class="fa-regular fa-user text-lg"></i>Account</button>
+  </div>
+</nav>
 
-      cartCount.textContent = count;
-      cartTotal.textContent = total;
-    }
+<!-- MOBILE FILTER DRAWER -->
+<div id="mobile-filter-wrap" class="hidden fixed inset-0 z-50">
+  <div class="absolute inset-0 modal-bg" onclick="closeMobileFilters()"></div>
+  <div class="absolute left-0 top-0 bottom-0 w-[88%] max-w-sm bg-paper shadow-2xl flex flex-col pop-in overflow-hidden">
+    <div class="bg-ink text-white p-4 flex items-center justify-between shrink-0"><div class="font-extrabold flex items-center gap-2"><i class="fa-solid fa-sliders"></i> Filters</div><button onclick="closeMobileFilters()" class="w-9 h-9 bg-white/10 rounded-xl"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="flex-1 overflow-y-auto p-4"><div id="mobile-filters" class="bg-white rounded-3xl border p-5 space-y-6"></div></div>
+    <div class="p-4 bg-white border-t flex gap-2 shrink-0"><button onclick="clearFilters()" class="flex-1 border-2 border-ink/15 font-extrabold py-3 rounded-2xl text-sm">Clear</button><button onclick="closeMobileFilters()" class="flex-[2] bg-ink text-white font-extrabold py-3 rounded-2xl text-sm">Show <span id="mobile-filter-results">0</span> books</button></div>
+  </div>
+</div>
 
-    // Remove item
-    function removeFromCart(index) {
-      cart.splice(index, 1);
-      updateCart();
-    }
+<!-- CART DRAWER -->
+<div id="cart-drawer-wrap" class="hidden fixed inset-0 z-50">
+  <div class="absolute inset-0 modal-bg" onclick="closeCartDrawer()"></div>
+  <div id="cart-drawer" class="drawer absolute right-0 top-0 bottom-0 w-full max-w-md bg-paper shadow-2xl flex flex-col translate-x-full">
+    <div class="bg-ink text-white p-4 flex items-center justify-between shrink-0"><div class="font-extrabold flex items-center gap-2"><i class="fa-solid fa-cart-shopping text-sun"></i> Your Cart <span id="drawer-cart-count" class="bg-sun text-ink text-xs px-2 py-0.5 rounded-full">0</span></div><button onclick="closeCartDrawer()" class="w-9 h-9 bg-white/10 rounded-xl hover:bg-white/20"><i class="fa-solid fa-xmark"></i></button></div>
+    <div id="cart-drawer-body" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+    <div id="cart-drawer-footer" class="p-4 bg-white border-t shrink-0"></div>
+  </div>
+</div>
 
-    // Open cart
-    function openCart() {
-      document.getElementById("cartOverlay").style.display = "block";
-    }
+<!-- AUTH MODAL -->
+<div id="auth-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+  <div class="absolute inset-0 modal-bg" onclick="closeAuth()"></div>
+  <div class="relative bg-white rounded-3xl overflow-hidden w-full max-w-4xl grid md:grid-cols-[.9fr_1.1fr] pop-in max-h-[92vh] overflow-y-auto">
+    <div class="hidden md:block bg-ink text-white p-8 relative overflow-hidden">
+      <div class="dot-grid absolute inset-0 opacity-20"></div>
+      <div class="relative"><div class="flex items-center gap-2"><div class="w-10 h-10 bg-sun rounded-xl flex items-center justify-center"><i class="fa-solid fa-book-open text-ink"></i></div><div class="font-display font-black text-xl">BookOLX</div></div>
+      <h3 class="font-display font-black text-3xl mt-8 leading-tight">Join 48,000+ readers saving big.</h3>
+      <ul class="mt-6 space-y-3 text-sm font-semibold text-white/70"><li class="flex gap-3"><i class="fa-solid fa-circle-check text-tealx mt-0.5"></i> Buy pre-loved at up to 70% off MRP</li><li class="flex gap-3"><i class="fa-solid fa-circle-check text-tealx mt-0.5"></i> Sell in 60 seconds, zero listing fee</li><li class="flex gap-3"><i class="fa-solid fa-circle-check text-tealx mt-0.5"></i> Buyer protection + 7-day returns</li><li class="flex gap-3"><i class="fa-solid fa-circle-check text-tealx mt-0.5"></i> ₹100 welcome coupon instantly</li></ul>
+      <div class="mt-8 bg-white/10 rounded-2xl p-4 flex items-center gap-3"><img src="https://i.pravatar.cc/60?img=45" class="w-11 h-11 rounded-full" alt="user"><div class="text-xs"><div class="flex text-sun text-[10px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div><p class="text-white/80 font-medium mt-1">"Sold 14 books in a week. Payouts are instant!"</p></div></div></div>
+    </div>
+    <div class="p-6 sm:p-8 relative">
+      <button onclick="closeAuth()" class="absolute top-4 right-4 w-9 h-9 bg-paper rounded-xl hover:bg-ink hover:text-white transition"><i class="fa-solid fa-xmark text-sm"></i></button>
+      <div class="flex bg-paper rounded-full p-1 gap-1 w-fit"><button id="auth-tab-login" onclick="switchAuthTab('login')" class="px-6 py-2 rounded-full text-sm font-extrabold bg-ink text-white transition">Login</button><button id="auth-tab-signup" onclick="switchAuthTab('signup')" class="px-6 py-2 rounded-full text-sm font-extrabold text-ink/50 transition">Sign Up</button></div>
+      <div id="auth-login" class="mt-6">
+        <h3 class="font-display font-black text-2xl">Welcome back, reader 📖</h3><p class="text-sm text-ink/50 font-medium mt-1">Your shelf missed you.</p>
+        <form onsubmit="handleLogin(event)" class="mt-5 space-y-3">
+          <div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Email</label><input id="login-email" type="email" required placeholder="you@email.com" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition"></div>
+          <div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Password</label><input id="login-password" type="password" required placeholder="••••••••" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition"></div>
+          <button class="w-full bg-ink text-white font-extrabold py-3.5 rounded-2xl text-sm hover:bg-inkLight transition">Login to BookOLX</button>
+        </form>
+        <button onclick="demoLogin()" class="w-full mt-3 border-2 border-dashed border-ink/20 hover:border-ink font-extrabold py-3 rounded-2xl text-sm transition flex items-center justify-center gap-2"><i class="fa-solid fa-bolt text-sunDark"></i> One-click Demo Login</button>
+        <p class="text-xs text-ink/40 font-semibold text-center mt-4">New here? <button onclick="switchAuthTab('signup')" class="text-ink font-extrabold underline">Create account</button> & get ₹100 off</p>
+      </div>
+      <div id="auth-signup" class="mt-6 hidden">
+        <h3 class="font-display font-black text-2xl">Create your shelf ✨</h3><p class="text-sm text-ink/50 font-medium mt-1">Free forever. Get ₹100 welcome coupon.</p>
+        <form onsubmit="handleSignup(event)" class="mt-5 space-y-3">
+          <div class="grid grid-cols-2 gap-3"><div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Full name</label><input id="su-name" required placeholder="Aarav Patel" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition"></div><div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Phone</label><input id="su-phone" required pattern="[0-9]{10}" maxlength="10" placeholder="9876543210" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition"></div></div>
+          <div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Email</label><input id="su-email" type="email" required placeholder="you@email.com" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition"></div>
+          <div class="grid grid-cols-2 gap-3"><div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">Password</label><input id="su-pass" type="password" required minlength="4" placeholder="Min 4 chars" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition"></div><div><label class="text-xs font-extrabold uppercase tracking-wider text-ink/50">City</label><select id="su-city" class="mt-1.5 w-full bg-paper border-2 border-transparent focus:border-ink rounded-xl px-4 py-3 text-sm font-semibold outline-none transition"><option>Mumbai</option><option>Delhi</option><option>Bangalore</option><option>Pune</option><option>Hyderabad</option><option>Chennai</option><option>Kolkata</option><option>Ahmedabad</option></select></div></div>
+          <button class="w-full bg-sun border-2 border-ink text-ink font-extrabold py-3.5 rounded-2xl text-sm shadow-popSm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">Create Account & Claim ₹100</button>
+        </form>
+        <p class="text-[11px] text-ink/40 font-medium text-center mt-3">By signing up you agree to our Terms & Privacy Policy. Demo only — data stays in your browser.</p>
+      </div>
+    </div>
+  </div>
+</div>
 
-    // Close cart
-    function closeCart() {
-      document.getElementById("cartOverlay").style.display = "none";
-    }
+<!-- CHAT MODAL -->
+<div id="chat-modal" class="hidden fixed bottom-20 md:bottom-6 right-3 md:right-6 z-[60] w-[calc(100vw-1.5rem)] max-w-sm">
+  <div class="bg-white rounded-3xl shadow-2xl border border-ink/10 overflow-hidden pop-in flex flex-col" style="height:min(520px,70vh)">
+    <div class="bg-ink text-white p-3.5 flex items-center gap-3 shrink-0"><img id="chat-avatar" src="" class="w-10 h-10 rounded-full border-2 border-sun object-cover" alt="seller"><div class="flex-1 min-w-0"><div id="chat-name" class="font-extrabold text-sm truncate">Seller</div><div class="text-[11px] text-green-300 font-bold flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span> Online • replies in ~5 min</div></div><button onclick="closeChat()" class="w-9 h-9 bg-white/10 rounded-xl hover:bg-white/20"><i class="fa-solid fa-xmark text-sm"></i></button></div>
+    <div id="chat-book-strip" class="px-3 py-2 bg-cream border-b flex items-center gap-2.5 shrink-0"></div>
+    <div id="chat-messages" class="flex-1 overflow-y-auto p-3.5 space-y-2.5 bg-paper/60"></div>
+    <div class="px-3 pt-2 flex gap-2 overflow-x-auto no-scrollbar shrink-0 bg-white"><button onclick="sendChatQuick('Is this available?')" class="text-[11px] font-extrabold border rounded-full px-3 py-1.5 whitespace-nowrap hover:bg-ink hover:text-white transition">Is this available?</button><button onclick="sendChatQuick('Best price?')" class="text-[11px] font-extrabold border rounded-full px-3 py-1.5 whitespace-nowrap hover:bg-ink hover:text-white transition">Best price?</button><button onclick="sendChatQuick('Can we meet today?')" class="text-[11px] font-extrabold border rounded-full px-3 py-1.5 whitespace-nowrap hover:bg-ink hover:text-white transition">Meet today?</button></div>
+    <form onsubmit="sendChatMessage(event)" class="p-3 flex gap-2 bg-white shrink-0"><input id="chat-input" placeholder="Type a message…" class="flex-1 bg-paper rounded-xl px-4 py-2.5 text-sm font-medium outline-none focus:ring-2 ring-ink/20 min-w-0"><button class="w-11 h-11 bg-ink text-sun rounded-xl shrink-0 hover:bg-inkLight"><i class="fa-solid fa-paper-plane text-sm"></i></button></form>
+  </div>
+</div>
 
-    // Search books
-    function searchBooks() {
+<!-- DELETE MODAL -->
+<div id="delete-modal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4">
+  <div class="absolute inset-0 modal-bg" onclick="cancelDelete()"></div>
+  <div class="relative bg-white rounded-3xl p-6 w-full max-w-sm pop-in text-center"><div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto"><i class="fa-solid fa-trash-can text-2xl text-red-500"></i></div><h3 class="font-display font-black text-xl mt-4">Delete this listing?</h3><p class="text-sm text-ink/50 font-medium mt-1">" <span id="delete-book-name" class="font-bold text-ink"></span> " will be removed permanently.</p><div class="grid grid-cols-2 gap-3 mt-5"><button onclick="cancelDelete()" class="border-2 border-ink/15 font-extrabold py-3 rounded-2xl text-sm hover:border-ink transition">Keep it</button><button onclick="confirmDelete()" class="bg-red-500 text-white font-extrabold py-3 rounded-2xl text-sm hover:bg-red-600 transition">Yes, delete</button></div></div>
+</div>
 
-      const searchValue =
-        document.getElementById("searchInput")
-        .value
-        .toLowerCase();
-
-      const books =
-        document.querySelectorAll(".book-card");
-
-      books.forEach(book => {
-
-        const name =
-          book.dataset.name.toLowerCase();
-
-        const category =
-          book.dataset.category.toLowerCase();
-
-        if (
-          name.includes(searchValue) ||
-          category.includes(searchValue)
-        ) {
-          book.style.display = "block";
-        } else {
-          book.style.display = "none";
-        }
-
-      });
-    }
-
-    // Filter books
-    function filterBooks(category, button) {
-
-      const books =
-        document.querySelectorAll(".book-card");
-
-      document
-        .querySelectorAll(".categories button")
-        .forEach(btn => btn.classList.remove("active"));
-
-      button.classList.add("active");
-
-      books.forEach(book => {
-
-        if (
-          category === "All" ||
-          book.dataset.category === category
-        ) {
-          book.style.display = "block";
-        } else {
-          book.style.display = "none";
-        }
-
-      });
-    }
-
-    // Scroll to products
-    function scrollToBooks() {
-      document
-        .getElementById("books")
-        .scrollIntoView({
-          behavior: "smooth"
-        });
-    }
-
-    // Checkout
-    function checkout() {
-
-      if (cart.length === 0) {
-        alert("Your cart is empty!");
-        return;
-      }
-
-      alert(
-        "Thank you for your order! Checkout integration can be connected here."
-      );
-    }
-
-    // Close cart when clicking outside
-    document
-      .getElementById("cartOverlay")
-      .addEventListener("click", function(event) {
-
-        if (event.target === this) {
-          closeCart();
-        }
-
-      });
-  </script>
+<!-- LIGHTBOX -->
+<div id="lightbox" class="hidden fixed inset-0 z-[80] flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/90" onclick="closeLightbox()"></div>
+  <img id="lightbox-img" src="" class="relative max-w-full max-h-[85vh] rounded-2xl shadow-2xl pop-in object-contain" alt="preview">
+  <button onclick="closeLightbox()" class="absolute top-4 right-4 w-11 h-11 bg-white/10 hover:bg-white/20 text-white rounded-full"><i class="fa-solid fa-xmark"></i></button>
+</div>
 
 </body>
 </html>
